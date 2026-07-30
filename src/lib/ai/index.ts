@@ -48,7 +48,7 @@ export async function analyzeWaste(params: AnalyzeWasteInput): Promise<AnalyzeWa
   }
 
   try {
-    const prompt = `You are an industrial waste analysis AI for CircuLink, a circular economy platform.
+    const prompt = `You are an industrial waste analysis AI for Waste2Worth, a circular economy platform.
 Analyze the following waste listing and generate structured predictions for classification, economic value, environmental impact, and target industries for reuse/recycling.
 
 Waste Details:
@@ -123,7 +123,7 @@ export async function getAssistantResponse(message: string): Promise<string> {
   }
 
   try {
-    const prompt = `You are CircuLink Assistant, an expert AI advisor for circular economy, industrial waste management, material recycling, industrial symbiosis, and environmental compliance.
+    const prompt = `You are Waste2Worth Assistant, an expert AI advisor for circular economy, industrial waste management, material recycling, industrial symbiosis, and environmental compliance.
 Provide detailed, helpful, professional, markdown-formatted guidance to the user's message.
 
 User Message: ${message}`;
@@ -151,7 +151,7 @@ export async function getCollaborationChains(): Promise<AICollaborationChain[]> 
   }
 
   try {
-    const prompt = `You are CircuLink AI, an industrial symbiosis optimization system.
+    const prompt = `You are Waste2Worth AI, an industrial symbiosis optimization system.
 Generate 3 realistic circular economy collaboration supply chains where waste streams from one company become valuable inputs for another.
 
 Respond with a raw valid JSON array matching this structure:

@@ -18,7 +18,6 @@ import {
   Mail,
   Phone,
   MapPin,
-  Sparkles,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import CircularHeroGraphic from "@/components/landing/CircularHeroGraphic";
@@ -94,52 +93,102 @@ export default function LandingPage() {
       {/* 1. FLOATING NAVIGATION BAR & FULLSCREEN OVERLAY MENU          */}
       {/* ------------------------------------------------------------- */}
       <header className="fixed top-6 left-0 right-0 z-50 px-4 sm:px-8 max-w-7xl mx-auto flex items-center justify-between pointer-events-none">
-        {/* Logo Pill */}
-        <Link
-          href="/"
-          className="pointer-events-auto flex items-center gap-3 bg-onyx text-white px-5 py-2.5 rounded-full shadow-2xl hover:scale-105 transition-transform"
+        {/* Main Solid Dark Header Bar with Explicit Dark Styling */}
+        <div
+          className="pointer-events-auto w-full border-2 border-emerald-500/40 rounded-full px-4 sm:px-6 py-2.5 shadow-2xl flex items-center justify-between transition-all"
+          style={{ backgroundColor: '#0f172a', color: '#ffffff' }}
         >
-          <div className="w-7 h-7 rounded-full bg-emerald-500 flex items-center justify-center shadow-lg">
-            <Recycle className="w-4 h-4 text-onyx" />
-          </div>
-          <span className="font-bold text-lg tracking-tight">
-            Circu<span className="text-emerald-400">Link</span>
-          </span>
-        </Link>
-
-        {/* Menu Trigger Button */}
-        <div className="pointer-events-auto flex items-center gap-3">
-          <Link href="/login" className="hidden sm:inline-flex">
-            <Button variant="ghost" className="rounded-full px-5 py-2 text-onyx hover:bg-black/5 font-semibold text-sm">
-              Log In
-            </Button>
-          </Link>
-          <button
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="group flex items-center gap-2 bg-onyx text-white px-5 py-2.5 rounded-full shadow-2xl hover:bg-emerald-600 transition-colors cursor-pointer"
-            aria-label="Toggle Menu"
+          {/* Logo & Brand */}
+          <Link
+            href="/"
+            className="flex items-center gap-3 group"
           >
-            <span className="text-xs uppercase font-bold tracking-wider">
-              {isMenuOpen ? "Close" : "Menu"}
-            </span>
-            <div className="w-5 h-5 flex flex-col justify-center gap-1">
-              {isMenuOpen ? (
-                <X className="w-5 h-5 text-emerald-400" />
-              ) : (
-                <>
-                  <div className="w-5 h-0.5 bg-white group-hover:bg-emerald-300 transition-all" />
-                  <div className="w-3.5 h-0.5 bg-emerald-400 group-hover:w-5 transition-all" />
-                  <div className="w-5 h-0.5 bg-white group-hover:bg-emerald-300 transition-all" />
-                </>
-              )}
+            <div className="w-10 h-10 rounded-xl overflow-hidden p-0.5 bg-gradient-to-tr from-emerald-400 via-teal-300 to-amber-400 shadow-lg group-hover:scale-105 transition-transform flex-shrink-0">
+              <img
+                src="/logo.png"
+                alt="Waste2Worth Logo"
+                className="w-full h-full object-contain rounded-[9px]"
+                style={{ backgroundColor: '#0f172a' }}
+              />
             </div>
-          </button>
+            <div className="flex flex-col">
+              <span className="font-black text-xl tracking-tight leading-none" style={{ color: '#ffffff' }}>
+                Waste<span style={{ color: '#34d399' }}>2Worth</span>
+              </span>
+              <span className="text-[10px] font-mono font-bold tracking-widest uppercase mt-0.5" style={{ color: '#10b981' }}>
+                Industrial Waste Exchange
+              </span>
+            </div>
+          </Link>
+
+          {/* Desktop Navigation Links */}
+          <nav
+            className="hidden md:flex items-center gap-1.5 border border-slate-700/80 rounded-full px-3 py-1.5"
+            style={{ backgroundColor: '#1e293b' }}
+          >
+            {[
+              { label: "About", href: "#about" },
+              { label: "Solutions", href: "#solutions" },
+              { label: "AI Engine", href: "#features" },
+              { label: "Impact", href: "#impact" },
+            ].map((item, idx) => (
+              <a
+                key={idx}
+                href={item.href}
+                className="px-4 py-1.5 rounded-full text-xs font-bold transition-all uppercase tracking-wider hover:bg-emerald-600/30"
+                style={{ color: '#e2e8f0' }}
+              >
+                {item.label}
+              </a>
+            ))}
+          </nav>
+
+          {/* Action CTAs & Mobile Trigger */}
+          <div className="flex items-center gap-2 sm:gap-3">
+            <Link href="/login">
+              <button
+                className="rounded-full px-4 py-2 text-xs font-extrabold border border-slate-700 transition-all hover:bg-slate-800 cursor-pointer"
+                style={{ color: '#ffffff', backgroundColor: 'transparent' }}
+              >
+                Log In
+              </button>
+            </Link>
+            <Link href="/signup" className="hidden sm:inline-flex">
+              <button
+                className="font-black text-xs uppercase tracking-wider rounded-full px-5 py-2.5 shadow-lg border border-emerald-300 transition-all hover:scale-105 flex items-center gap-1.5 cursor-pointer"
+                style={{ backgroundColor: '#10b981', color: '#0f172a' }}
+              >
+                Launch Platform <ArrowUpRight className="w-4 h-4" />
+              </button>
+            </Link>
+            <button
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              className="group flex items-center gap-2 border border-emerald-500/40 px-4 py-2 rounded-full transition-all cursor-pointer"
+              style={{ backgroundColor: '#0f172a', color: '#ffffff' }}
+              aria-label="Toggle Menu"
+            >
+              <span className="text-xs uppercase font-extrabold tracking-wider" style={{ color: '#ffffff' }}>
+                {isMenuOpen ? "Close" : "Menu"}
+              </span>
+              <div className="w-4 h-4 flex flex-col justify-center gap-1">
+                {isMenuOpen ? (
+                  <X className="w-4 h-4" style={{ color: '#34d399' }} />
+                ) : (
+                  <>
+                    <div className="w-4 h-0.5 bg-white transition-all" />
+                    <div className="w-2.5 h-0.5 transition-all" style={{ backgroundColor: '#34d399' }} />
+                    <div className="w-4 h-0.5 bg-white transition-all" />
+                  </>
+                )}
+              </div>
+            </button>
+          </div>
         </div>
       </header>
 
-      {/* Fullscreen Overlay Menu (b-egg modal_wrapper clone) */}
+      {/* Fullscreen Overlay Menu */}
       {isMenuOpen && (
-        <div className="fixed inset-0 z-40 bg-onyx text-white flex flex-col justify-between p-8 sm:p-16 animate-fade-in">
+        <div className="fixed inset-0 z-40 bg-gradient-to-br from-slate-950 via-slate-900 to-emerald-950 text-white flex flex-col justify-between p-8 sm:p-16 animate-fade-in backdrop-blur-2xl border-b border-emerald-500/20">
           {/* Top Header Placeholder */}
           <div className="h-16" />
 
@@ -165,13 +214,13 @@ export default function LandingPage() {
             </div>
 
             {/* Contact & Platform Quick Info */}
-            <div className="lg:col-span-4 border-t lg:border-t-0 lg:border-l border-slate-800 pt-8 lg:pt-0 lg:pl-12 space-y-8 text-slate-300">
+            <div className="lg:col-span-4 border-t lg:border-t-0 lg:border-l border-emerald-900/50 pt-8 lg:pt-0 lg:pl-12 space-y-8 text-slate-300">
               <div>
                 <p className="text-xs uppercase tracking-widest text-emerald-400 font-semibold mb-2">
                   Get in Touch
                 </p>
-                <a href="mailto:connect@circulink.ai" className="text-lg hover:text-white flex items-center gap-2">
-                  <Mail className="w-4 h-4 text-emerald-400" /> connect@circulink.ai
+                <a href="mailto:connect@waste2worth.ai" className="text-lg hover:text-white flex items-center gap-2">
+                  <Mail className="w-4 h-4 text-emerald-400" /> connect@waste2worth.ai
                 </a>
                 <p className="text-sm text-slate-400 mt-1 flex items-center gap-2">
                   <Phone className="w-4 h-4 text-emerald-400" /> +1 (800) 555-CIRC
@@ -190,7 +239,7 @@ export default function LandingPage() {
 
               <div className="pt-4 flex flex-wrap gap-4">
                 <Link href="/signup" onClick={() => setIsMenuOpen(false)}>
-                  <Button className="bg-emerald-500 hover:bg-emerald-400 text-onyx font-bold rounded-full px-6 py-3">
+                  <Button className="bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-slate-950 font-extrabold rounded-full px-6 py-3 shadow-lg shadow-emerald-500/20">
                     Launch Platform <ArrowUpRight className="w-4 h-4 ml-1" />
                   </Button>
                 </Link>
@@ -199,8 +248,8 @@ export default function LandingPage() {
           </div>
 
           {/* Bottom Footer Info inside Overlay */}
-          <div className="max-w-7xl mx-auto w-full border-t border-slate-800 pt-6 flex flex-col sm:flex-row justify-between items-center text-xs text-slate-500">
-            <span>© 2026 CircuLink Inc. All rights reserved.</span>
+          <div className="max-w-7xl mx-auto w-full border-t border-slate-800/80 pt-6 flex flex-col sm:flex-row justify-between items-center text-xs text-slate-500">
+            <span>© 2026 Waste2Worth Inc. All rights reserved.</span>
             <span className="text-emerald-400 font-mono">B2B CIRCULAR ECONOMY ENGINE</span>
           </div>
         </div>
@@ -211,11 +260,7 @@ export default function LandingPage() {
       {/* ------------------------------------------------------------- */}
       <section className="relative pt-32 sm:pt-44 pb-20 px-4 sm:px-8 max-w-7xl mx-auto">
         <div className="text-center max-w-5xl mx-auto space-y-6">
-          {/* Badge */}
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-800 text-xs font-semibold uppercase tracking-wider">
-            <Sparkles className="w-3.5 h-3.5 text-emerald-600" />
-            AI-POWERED INDUSTRIAL MATERIAL LOOPS
-          </div>
+
 
           {/* Masked Editorial Heading Reveal */}
           <div className="space-y-1">
@@ -419,7 +464,7 @@ export default function LandingPage() {
             </h2>
           </div>
           <p className="text-slate-600 max-w-md text-base">
-            Click to explore how CircuLink streamlines B2B material trading, automated certification, and verified ESG compliance.
+            Click to explore how Waste2Worth streamlines B2B material trading, automated certification, and verified ESG compliance.
           </p>
         </div>
 
@@ -438,7 +483,7 @@ export default function LandingPage() {
               metric: "100% CHAIN-OF-CUSTODY",
               summary: "Digital Product Passports & Lab Verification",
               description:
-                "Every batch circulating on CircuLink carries an immutable digital passport containing lab purity analysis, supplier provenance, transportation telemetry, and chain-of-custody documentation.",
+                "Every batch circulating on Waste2Worth carries an immutable digital passport containing lab purity analysis, supplier provenance, transportation telemetry, and chain-of-custody documentation.",
             },
             {
               title: "PREMIUM QUALITY",
@@ -511,7 +556,7 @@ export default function LandingPage() {
             THE BEST OF SUSTAINABLE SUPPLY CHAINS
           </h2>
           <p className="text-slate-300 text-base sm:text-xl max-w-2xl mx-auto">
-            Join leading enterprise manufacturers and recyclers standardizing on CircuLink for circular material sourcing and automated ESG reporting.
+            Join leading enterprise manufacturers and recyclers standardizing on Waste2Worth for circular material sourcing and automated ESG reporting.
           </p>
           <div className="pt-4 flex justify-center">
             <Link href="/signup">
@@ -554,7 +599,7 @@ export default function LandingPage() {
               </form>
               {subscribed && (
                 <p className="text-xs text-emerald-600 font-semibold mt-2 flex items-center gap-1">
-                  <CheckCircle2 className="w-4 h-4" /> Thank you! You're subscribed to CircuLink insights.
+                  <CheckCircle2 className="w-4 h-4" /> Thank you! You're subscribed to Waste2Worth insights.
                 </p>
               )}
             </div>
@@ -578,7 +623,7 @@ export default function LandingPage() {
                 The AI-powered B2B circular economy platform connecting material suppliers with sustainable manufacturers worldwide.
               </p>
               <div className="text-xs space-y-1 text-slate-500 font-mono pt-2">
-                <p>CONTACT: connect@circulink.ai</p>
+                <p>CONTACT: connect@waste2worth.ai</p>
                 <p>PHONE: +1 (800) 555-CIRC</p>
                 <p>HUB: 350 Mission St, San Francisco, CA</p>
               </div>
@@ -590,10 +635,10 @@ export default function LandingPage() {
                 PLATFORM
               </p>
               <ul className="space-y-2 font-medium text-slate-700">
-                <li><a href="#about" className="hover:text-emerald-600 transition-colors">WHO WE ARE</a></li>
-                <li><a href="#features" className="hover:text-emerald-600 transition-colors">AI MATCHING ENGINE</a></li>
-                <li><a href="#features" className="hover:text-emerald-600 transition-colors">MATERIAL PASSPORTS</a></li>
-                <li><a href="#impact" className="hover:text-emerald-600 transition-colors">SCOPE 3 ANALYTICS</a></li>
+                <li><Link href="/about" className="hover:text-emerald-600 transition-colors">WHO WE ARE</Link></li>
+                <li><Link href="/how-it-works" className="hover:text-emerald-600 transition-colors">HOW IT WORKS</Link></li>
+                <li><Link href="/dashboard/marketplace" className="hover:text-emerald-600 transition-colors">MARKETPLACE</Link></li>
+                <li><Link href="/about" className="hover:text-emerald-600 transition-colors">SCOPE 3 ANALYTICS</Link></li>
               </ul>
             </div>
 
@@ -603,16 +648,16 @@ export default function LandingPage() {
                 COMPLIANCE & GOVERNANCE
               </p>
               <ul className="space-y-2 font-medium text-slate-700">
-                <li><a href="#" className="hover:text-emerald-600 transition-colors">PRIVACY POLICY</a></li>
-                <li><a href="#" className="hover:text-emerald-600 transition-colors">TERMS OF SERVICE</a></li>
-                <li><a href="#" className="hover:text-emerald-600 transition-colors">SECURITY & SOC2</a></li>
-                <li><a href="#" className="hover:text-emerald-600 transition-colors">ESG CERTIFICATIONS</a></li>
+                <li><Link href="/privacy" className="hover:text-emerald-600 transition-colors">PRIVACY POLICY</Link></li>
+                <li><Link href="/terms" className="hover:text-emerald-600 transition-colors">TERMS OF SERVICE</Link></li>
+                <li><Link href="/privacy" className="hover:text-emerald-600 transition-colors">SECURITY & SOC2</Link></li>
+                <li><Link href="/about" className="hover:text-emerald-600 transition-colors">ESG CERTIFICATIONS</Link></li>
               </ul>
             </div>
           </div>
 
           <div className="border-t border-onyx-subtle pt-8 flex flex-col sm:flex-row justify-between items-center text-xs text-slate-500 gap-4">
-            <p>© 2026 CircuLink Inc. Built for the Circular Economy.</p>
+            <p>© 2026 Waste2Worth Inc. Built for the Circular Economy.</p>
             <div className="flex items-center gap-6">
               <a href="#" className="hover:text-onyx transition-colors">TWITTER / X</a>
               <a href="#" className="hover:text-onyx transition-colors">LINKEDIN</a>

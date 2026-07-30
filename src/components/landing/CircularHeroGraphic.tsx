@@ -94,7 +94,7 @@ export default function CircularHeroGraphic() {
       {/* Floating Interactive Badge Elements over SVG */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center justify-center text-center z-20 pointer-events-none">
         <Recycle className="w-8 h-8 text-emerald-400 animate-spin" style={{ animationDuration: "12s" }} />
-        <span className="text-xs font-bold uppercase tracking-wider text-emerald-300 mt-1">CIRCULINK AI</span>
+        <span className="text-xs font-bold uppercase tracking-wider text-emerald-300 mt-1">WASTE2WORTH AI</span>
         <span className="text-[10px] text-slate-400">99.4% Matched</span>
       </div>
 

@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Recycle, Eye, EyeOff, Loader2 } from "lucide-react";
@@ -10,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
+import { createClient } from "@/lib/supabase/client";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -23,20 +23,37 @@ export default function LoginPage() {
     setLoading(true);
 
     try {
-      const result = await signIn("credentials", {
+      const supabase = createClient();
+      const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
-        redirect: false,
       });
 
-      if (result?.error) {
-        toast.error("Invalid email or password");
-      } else {
-        toast.success("Welcome back!");
-        window.location.href = result?.url || "/dashboard";
+      if (error) {
+        if (error.message.toLowerCase().includes("invalid login credentials") ||
+            error.message.toLowerCase().includes("invalid email or password")) {
+          toast.error("Invalid email or password");
+        } else if (error.message.toLowerCase().includes("email not confirmed")) {
+          toast.error("Please verify your email before signing in");
+        } else {
+          toast.error(error.message || "Sign in failed");
+        }
+        return;
       }
+
+      if (!data.user) {
+        toast.error("Sign in failed. Please try again.");
+        return;
+      }
+
+      toast.success("Welcome back!");
+
+      const role = data.user.user_metadata?.role || "COMPANY";
+
+      router.refresh();
+      window.location.href = role === "ADMIN" ? "/admin" : "/dashboard";
     } catch {
-      toast.error("Invalid email or password");
+      toast.error("Something went wrong. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -62,7 +79,7 @@ export default function LoginPage() {
         <Card className="shadow-xl border-slate-200/50">
           <CardHeader className="text-center pb-2">
             <CardTitle className="text-2xl">Welcome Back</CardTitle>
-            <CardDescription>Sign in to your account to continue</CardDescription>
+            <CardDescription>Sign in to your Waste2Worth account</CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
@@ -74,6 +91,7 @@ export default function LoginPage() {
                   placeholder="you@company.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
+                  autoComplete="email"
                   required
                 />
               </div>
@@ -87,12 +105,14 @@ export default function LoginPage() {
                     placeholder="••••••••"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
+                    autoComplete="current-password"
                     required
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
                     className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                    aria-label={showPassword ? "Hide password" : "Show password"}
                   >
                     {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                   </button>
@@ -116,14 +136,6 @@ export default function LoginPage() {
               <Link href="/signup" className="text-emerald-600 hover:text-emerald-700 font-medium">
                 Sign up
               </Link>
-            </div>
-
-            <div className="mt-4 p-3 rounded-lg bg-slate-50 border border-slate-200">
-              <p className="text-xs text-slate-500 text-center">
-                <strong>Demo Accounts:</strong><br />
-                Admin: admin@circulink.com / admin123<br />
-                Company: info@greenmetals.com / company123
-              </p>
             </div>
           </CardContent>
         </Card>

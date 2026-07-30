@@ -1,4 +1,4 @@
-import { auth } from "@/lib/auth";
+import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { Sidebar } from "@/components/layout/Sidebar";
@@ -9,33 +9,38 @@ export default async function DashboardLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const session = await auth();
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
-  if (!session || session.user.role !== "COMPANY") {
+  if (!user) {
     redirect("/login");
   }
 
-  const company = session.user.companyId
-    ? await prisma.company.findUnique({
-        where: { id: session.user.companyId },
-        select: { name: true, verificationStatus: true },
-      })
-    : null;
+  const userEmail = user.email || "";
+  const userName =
+    user.user_metadata?.name ||
+    userEmail.split("@")[0] ||
+    "User";
+  const userRole = (user.user_metadata?.role || "COMPANY") as "ADMIN" | "COMPANY";
+  const companyName = user.user_metadata?.companyName || "My Company";
 
-  if (!company || company.verificationStatus !== "APPROVED") {
-    redirect("/verify-pending");
+  let notificationCount = 0;
+  try {
+    notificationCount = await prisma.notification.count({
+      where: { userId: user.id, isRead: false },
+    });
+  } catch {
+    // Swallowed if DB user record is unlinked
   }
-
-  const notificationCount = await prisma.notification.count({
-    where: { userId: session.user.id, isRead: false },
-  });
 
   return (
     <div className="min-h-screen bg-slate-50">
       <Sidebar
-        role="COMPANY"
-        userName={session.user.name}
-        companyName={company.name}
+        role={userRole}
+        userName={userName}
+        companyName={companyName}
       />
       <div className="pl-[260px] transition-all duration-300">
         <Navbar notificationCount={notificationCount} />

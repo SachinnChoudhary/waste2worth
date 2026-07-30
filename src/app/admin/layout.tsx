@@ -1,4 +1,4 @@
-import { auth } from "@/lib/auth";
+import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { Sidebar } from "@/components/layout/Sidebar";
@@ -9,21 +9,33 @@ export default async function AdminLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const session = await auth();
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
-  if (!session || session.user.role !== "ADMIN") {
+  const role = user?.user_metadata?.role || "COMPANY";
+
+  if (!user || role !== "ADMIN") {
     redirect("/login");
   }
 
-  const notificationCount = await prisma.notification.count({
-    where: { userId: session.user.id, isRead: false },
-  });
+  const userName = user.user_metadata?.name || user.email?.split("@")[0] || "Admin";
+
+  let notificationCount = 0;
+  try {
+    notificationCount = await prisma.notification.count({
+      where: { userId: user.id, isRead: false },
+    });
+  } catch {
+    // Ignore notification error
+  }
 
   return (
     <div className="min-h-screen bg-slate-50">
       <Sidebar
         role="ADMIN"
-        userName={session.user.name}
+        userName={userName}
       />
       <div className="pl-[260px] transition-all duration-300">
         <Navbar title="Admin Panel" notificationCount={notificationCount} />

@@ -1,13 +1,13 @@
 import { NextResponse } from "next/server";
-import { auth } from "@/lib/auth";
+import { getAuthUser } from "@/lib/auth-helpers";
 import { prisma } from "@/lib/prisma";
 
 export async function PATCH(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const session = await auth();
-  if (!session?.user?.companyId) {
+  const user = await getAuthUser();
+  if (!user?.companyId) {
     return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
   }
 
@@ -28,14 +28,14 @@ export async function PATCH(
 
   // Only the listing owner can accept/reject
   if (body.status === "ACCEPTED" || body.status === "REJECTED") {
-    if (bid.listing.companyId !== session.user.companyId) {
+    if (bid.listing.companyId !== user.companyId) {
       return NextResponse.json({ success: false, error: "Not authorized" }, { status: 403 });
     }
   }
 
   // Only the bidder can withdraw
   if (body.status === "WITHDRAWN") {
-    if (bid.buyerCompanyId !== session.user.companyId) {
+    if (bid.buyerCompanyId !== user.companyId) {
       return NextResponse.json({ success: false, error: "Not authorized" }, { status: 403 });
     }
   }

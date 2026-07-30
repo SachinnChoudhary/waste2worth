@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { signOut } from "next-auth/react";
+import { createClient } from "@/lib/supabase/client";
 import {
   LayoutDashboard,
   Package,
@@ -88,13 +88,15 @@ export function Sidebar({ role, userName = "User", companyName }: SidebarProps) 
     >
       {/* Logo */}
       <div className="h-16 flex items-center px-4 border-b border-slate-100">
-        <Link href={role === "ADMIN" ? "/admin" : "/dashboard"} className="flex items-center gap-2">
-          <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center shadow-md flex-shrink-0">
-            <Recycle className="w-5 h-5 text-white" />
-          </div>
+        <Link href={role === "ADMIN" ? "/admin" : "/dashboard"} className="flex items-center gap-2.5 overflow-hidden">
+          <img
+            src="/logo.png"
+            alt="Waste2Worth Logo"
+            className="w-9 h-9 object-contain rounded-lg flex-shrink-0 shadow-sm"
+          />
           {!collapsed && (
-            <span className="text-lg font-bold text-slate-900">
-              Circu<span className="text-emerald-600">Link</span>
+            <span className="text-lg font-extrabold tracking-tight text-slate-900">
+              Waste<span className="text-emerald-600">2Worth</span>
             </span>
           )}
         </Link>
@@ -143,7 +145,11 @@ export function Sidebar({ role, userName = "User", companyName }: SidebarProps) 
           </div>
         )}
         <button
-          onClick={() => signOut({ callbackUrl: "/login" })}
+          onClick={async () => {
+            const supabase = createClient();
+            await supabase.auth.signOut();
+            window.location.href = "/login";
+          }}
           className={cn(
             "flex items-center gap-3 w-full px-3 py-2 rounded-lg text-sm text-slate-600 hover:bg-red-50 hover:text-red-600 transition-colors",
             collapsed && "justify-center"

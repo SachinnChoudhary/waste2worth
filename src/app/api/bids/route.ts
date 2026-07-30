@@ -1,10 +1,10 @@
 import { NextResponse } from "next/server";
-import { auth } from "@/lib/auth";
+import { getAuthUser } from "@/lib/auth-helpers";
 import { prisma } from "@/lib/prisma";
 
 export async function POST(request: Request) {
-  const session = await auth();
-  if (!session?.user?.companyId) {
+  const user = await getAuthUser();
+  if (!user?.companyId) {
     return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
   }
 
@@ -21,21 +21,21 @@ export async function POST(request: Request) {
       return NextResponse.json({ success: false, error: "Listing not available" }, { status: 400 });
     }
 
-    if (listing.companyId === session.user.companyId) {
+    if (listing.companyId === user.companyId) {
       return NextResponse.json({ success: false, error: "Cannot bid on own listing" }, { status: 400 });
     }
 
     if (listing.minimumBid && body.bidAmount < listing.minimumBid) {
       return NextResponse.json({
         success: false,
-        error: `Minimum bid is $${listing.minimumBid}`,
+        error: `Minimum bid is ₹${listing.minimumBid}`,
       }, { status: 400 });
     }
 
     const bid = await prisma.bid.create({
       data: {
         listingId: body.listingId,
-        buyerCompanyId: session.user.companyId,
+        buyerCompanyId: user.companyId,
         bidAmount: body.bidAmount,
         quantityRequested: body.quantityRequested,
         message: body.message,
@@ -50,16 +50,16 @@ export async function POST(request: Request) {
     });
 
     const buyerCompany = await prisma.company.findUnique({
-      where: { id: session.user.companyId },
+      where: { id: user.companyId },
       select: { name: true },
     });
 
     await prisma.notification.createMany({
-      data: sellerUsers.map((u) => ({
+      data: sellerUsers.map((u: any) => ({
         userId: u.id,
         type: "NEW_BID",
         title: "New Bid Received",
-        content: `${buyerCompany?.name} placed a $${body.bidAmount} bid on your listing.`,
+        content: `${buyerCompany?.name} placed a ₹${body.bidAmount} bid on your listing.`,
         link: `/dashboard/listings/${body.listingId}`,
       })),
     });
@@ -72,13 +72,13 @@ export async function POST(request: Request) {
 }
 
 export async function GET(request: Request) {
-  const session = await auth();
-  if (!session?.user?.companyId) {
+  const user = await getAuthUser();
+  if (!user?.companyId) {
     return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
   }
 
   const bids = await prisma.bid.findMany({
-    where: { buyerCompanyId: session.user.companyId },
+    where: { buyerCompanyId: user.companyId },
     orderBy: { createdAt: "desc" },
     include: {
       listing: {

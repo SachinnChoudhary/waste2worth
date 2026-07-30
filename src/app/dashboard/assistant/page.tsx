@@ -26,7 +26,7 @@ export default function AssistantPage() {
     {
       role: "assistant",
       content:
-        "Hello! I'm your CircuLink Sustainability Assistant. I can help you with waste management best practices, regulatory guidance, material classification, and tips to optimize your listings. What would you like to know?",
+        "Hello! I'm your Waste2Worth Sustainability Assistant. I can help you with waste management best practices, regulatory guidance, material classification, and tips to optimize your listings. What would you like to know?",
       timestamp: new Date(),
     },
   ]);

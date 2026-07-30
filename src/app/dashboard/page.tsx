@@ -1,4 +1,4 @@
-import { auth } from "@/lib/auth";
+import { getAuthUser } from "@/lib/auth-helpers";
 import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
 import {
@@ -17,7 +17,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { WasteCard } from "@/components/shared/WasteCard";
 import Link from "next/link";
-import { formatRelativeTime, wasteCategoryLabels } from "@/lib/utils";
+import { formatRelativeTime, wasteCategoryLabels, formatCurrency } from "@/lib/utils";
 
 async function getCompanyDashboardData(companyId: string) {
   const [
@@ -101,10 +101,8 @@ async function getCompanyDashboardData(companyId: string) {
 }
 
 export default async function CompanyDashboard() {
-  const session = await auth();
-  if (!session?.user?.companyId) redirect("/login");
-
-  const data = await getCompanyDashboardData(session.user.companyId);
+  const user = await getAuthUser();
+  const data = await getCompanyDashboardData(user.companyId);
 
   return (
     <div className="space-y-6">
@@ -167,7 +165,7 @@ export default async function CompanyDashboard() {
           <CardContent>
             {data.recentBids.length > 0 ? (
               <div className="space-y-3">
-                {data.recentBids.map((bid) => (
+                {data.recentBids.map((bid: any) => (
                   <div
                     key={bid.id}
                     className="p-3 rounded-lg bg-slate-50 hover:bg-slate-100 transition-colors"
@@ -177,7 +175,7 @@ export default async function CompanyDashboard() {
                         {bid.buyerCompany.name}
                       </p>
                       <span className="text-sm font-bold text-emerald-600">
-                        ${bid.bidAmount.toLocaleString()}
+                        {formatCurrency(bid.bidAmount)}
                       </span>
                     </div>
                     <p className="text-xs text-slate-500 truncate">
@@ -212,7 +210,7 @@ export default async function CompanyDashboard() {
           <CardContent>
             {data.recommendedListings.length > 0 ? (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {data.recommendedListings.map((listing) => (
+                {data.recommendedListings.map((listing: any) => (
                   <WasteCard
                     key={listing.id}
                     id={listing.id}

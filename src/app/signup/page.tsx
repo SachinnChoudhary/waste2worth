@@ -83,7 +83,7 @@ export default function SignupPage() {
       const data = await res.json();
 
       if (data.success) {
-        toast.success("Registration successful! Please log in.");
+        toast.success(data.message || "Account created! You can now log in.");
         router.push("/login");
       } else {
         toast.error(data.error || "Registration failed");

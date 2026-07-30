@@ -35,6 +35,17 @@ const statusVariant: Record<string, "default" | "secondary" | "warning" | "succe
   REMOVED: "destructive",
 };
 
+const categoryDefaultImages: Record<string, string> = {
+  METAL_SCRAP: "https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?w=800&auto=format&fit=crop&q=80",
+  PLASTIC: "https://images.unsplash.com/photo-1562077772-3bd90403f7f0?w=800&auto=format&fit=crop&q=80",
+  TEXTILE_WASTE: "https://images.unsplash.com/photo-1604176354204-9268737828e4?w=800&auto=format&fit=crop&q=80",
+  CHEMICAL_BYPRODUCTS: "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=800&auto=format&fit=crop&q=80",
+  E_WASTE: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=800&auto=format&fit=crop&q=80",
+  CONSTRUCTION_DEBRIS: "https://images.unsplash.com/photo-1541888946425-d0fbb186a5b7?w=800&auto=format&fit=crop&q=80",
+  ORGANIC_AGRI: "https://images.unsplash.com/photo-1530587191325-3db32d826c18?w=800&auto=format&fit=crop&q=80",
+  WOOD: "https://images.unsplash.com/photo-1589939705384-5185137a7f0f?w=800&auto=format&fit=crop&q=80",
+};
+
 export function WasteCard({
   id,
   title,
@@ -55,23 +66,18 @@ export function WasteCard({
   href,
 }: WasteCardProps) {
   const cardHref = href || `/dashboard/marketplace/${id}`;
+  const displayImage = images?.[0] || categoryDefaultImages[category] || "https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?w=800&auto=format&fit=crop&q=80";
 
   return (
     <Link href={cardHref}>
       <div className="group rounded-xl border border-slate-200 bg-white overflow-hidden hover:shadow-xl hover:border-emerald-200 transition-all duration-300 hover:-translate-y-1">
         {/* Image */}
         <div className="relative h-44 bg-gradient-to-br from-slate-100 to-slate-50 overflow-hidden">
-          {images?.[0] ? (
-            <img
-              src={images[0]}
-              alt={title}
-              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-            />
-          ) : (
-            <div className="w-full h-full flex items-center justify-center">
-              <Tag className="w-12 h-12 text-slate-300" />
-            </div>
-          )}
+          <img
+            src={displayImage}
+            alt={title}
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+          />
           <div className="absolute top-3 left-3 flex gap-2">
             <Badge variant={statusVariant[status] || "secondary"}>
               {status.replace(/_/g, " ")}

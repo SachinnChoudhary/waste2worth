@@ -300,16 +300,16 @@ export default function NewListingPage() {
           <CardContent className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label>Expected Price (USD)</Label>
+                <Label>Expected Price (₹ INR)</Label>
                 <Input
                   type="number"
-                  placeholder="Leave empty for 'open to offers'"
+                  placeholder="e.g. 50000"
                   value={form.priceExpectation}
                   onChange={(e) => updateForm("priceExpectation", e.target.value)}
                 />
               </div>
               <div className="space-y-2">
-                <Label>Minimum Bid (USD)</Label>
+                <Label>Minimum Bid (₹ INR)</Label>
                 <Input
                   type="number"
                   placeholder="Optional"
@@ -469,7 +469,7 @@ export default function NewListingPage() {
               <div className="p-3 bg-slate-50 rounded-lg">
                 <p className="text-xs text-slate-500">Price</p>
                 <p className="font-medium text-slate-900">
-                  {form.priceExpectation ? `$${form.priceExpectation}` : "Open to offers"}
+                  {form.priceExpectation ? `₹${form.priceExpectation}` : "Open to offers"}
                 </p>
               </div>
               <div className="p-3 bg-slate-50 rounded-lg">

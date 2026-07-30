@@ -189,7 +189,7 @@ export function getMockAssistantResponse(message: string): string {
   }
 
   if (lowerMsg.includes("co2") || lowerMsg.includes("carbon") || lowerMsg.includes("emission")) {
-    return "**Understanding Your Carbon Impact:**\n\nEvery ton of waste diverted from landfill through CircuLink saves approximately:\n- **Metal scrap:** 1.8 tons CO₂ per ton recycled\n- **Plastic:** 2.5 tons CO₂ per ton recycled  \n- **Textiles:** 3.2 tons CO₂ per ton reused\n- **E-waste:** 5.0 tons CO₂ per ton properly recycled\n\n**Tip:** Track your cumulative impact in the Analytics dashboard to generate ESG reports for your stakeholders.";
+    return "**Understanding Your Carbon Impact:**\n\nEvery ton of waste diverted from landfill through Waste2Worth saves approximately:\n- **Metal scrap:** 1.8 tons CO₂ per ton recycled\n- **Plastic:** 2.5 tons CO₂ per ton recycled  \n- **Textiles:** 3.2 tons CO₂ per ton reused\n- **E-waste:** 5.0 tons CO₂ per ton properly recycled\n\n**Tip:** Track your cumulative impact in the Analytics dashboard to generate ESG reports for your stakeholders.";
   }
 
   return "Thank you for your question! Here are some general waste management best practices:\n\n1. **Proper classification** — Always accurately describe your waste type and any hazardous properties.\n2. **Documentation** — Keep records of waste generation, handling, and transactions for regulatory compliance.\n3. **Pricing** — Use the AI value estimation tool when creating listings to set competitive prices.\n4. **Circular thinking** — Consider if your waste could be another company's raw material.\n\nFeel free to ask me specific questions about waste categories, regulations, environmental impact, or how to optimize your listings!";

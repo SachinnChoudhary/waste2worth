@@ -1,16 +1,16 @@
 import { NextResponse } from "next/server";
-import { auth } from "@/lib/auth";
+import { getAuthUser } from "@/lib/auth-helpers";
 import { prisma } from "@/lib/prisma";
 
 export async function GET() {
-  const session = await auth();
-  if (!session?.user?.companyId) {
+  const user = await getAuthUser();
+  if (!user?.companyId) {
     return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
   }
 
   const bids = await prisma.bid.findMany({
     where: {
-      listing: { companyId: session.user.companyId },
+      listing: { companyId: user.companyId },
     },
     orderBy: { createdAt: "desc" },
     include: {

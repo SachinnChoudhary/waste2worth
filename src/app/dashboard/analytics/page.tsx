@@ -43,7 +43,7 @@ export default function AnalyticsPage() {
       {/* KPI Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard label="Total Waste Diverted" value="13.4t" icon={Recycle} color="emerald" change={28} changeLabel="vs last quarter" />
-        <StatCard label="Revenue Earned" value="$93,500" icon={DollarSign} color="blue" change={15} changeLabel="vs last quarter" />
+        <StatCard label="Revenue Earned" value="₹93,500" icon={DollarSign} color="blue" change={15} changeLabel="vs last quarter" />
         <StatCard label="CO₂ Saved" value="23.9t" icon={Leaf} color="cyan" change={32} changeLabel="vs last quarter" />
         <StatCard label="Active Listings" value="12" icon={Package} color="purple" change={8} changeLabel="vs last month" />
       </div>
@@ -76,7 +76,7 @@ export default function AnalyticsPage() {
                     </div>
                     <div className="flex-1">
                       <div className="flex items-center justify-between mb-1">
-                        <span className="text-xs text-slate-500">Revenue (${(month.revenue / 1000).toFixed(1)}k)</span>
+                        <span className="text-xs text-slate-500">Revenue (₹{(month.revenue / 1000).toFixed(1)}k)</span>
                       </div>
                       <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
                         <div

@@ -1,15 +1,15 @@
 import { NextResponse } from "next/server";
-import { auth } from "@/lib/auth";
+import { getAuthUser } from "@/lib/auth-helpers";
 import { prisma } from "@/lib/prisma";
 
 export async function GET(request: Request) {
-  const session = await auth();
-  if (!session) {
+  const user = await getAuthUser();
+  if (!user) {
     return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
   }
 
   const { searchParams } = new URL(request.url);
-  const companyId = searchParams.get("companyId") || session.user.companyId;
+  const companyId = searchParams.get("companyId") || user.companyId;
   const status = searchParams.get("status");
 
   const where: Record<string, unknown> = {};
@@ -34,8 +34,8 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
-  const session = await auth();
-  if (!session?.user?.companyId) {
+  const user = await getAuthUser();
+  if (!user?.companyId) {
     return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
   }
 
@@ -44,7 +44,7 @@ export async function POST(request: Request) {
 
     const listing = await prisma.wasteListing.create({
       data: {
-        companyId: session.user.companyId,
+        companyId: user.companyId,
         title: body.title,
         wasteType: body.wasteType,
         category: body.category,

@@ -9,7 +9,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "CircuLink — AI-Powered Industrial Waste Exchange",
+  title: "Waste2Worth — AI-Powered Industrial Waste Exchange",
   description:
     "Connect waste-generating companies with industries that can reuse waste as raw materials. AI-powered matching, value estimation, and circular supply chain discovery.",
   keywords: [
@@ -29,8 +29,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={inter.variable}>
-      <body className="min-h-screen bg-white antialiased">
+    <html lang="en" className={inter.variable} suppressHydrationWarning>
+      <body className="min-h-screen bg-white antialiased" suppressHydrationWarning>
         {children}
         <Toaster
           position="top-right"
