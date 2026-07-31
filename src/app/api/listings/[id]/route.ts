@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { auth } from "@/lib/auth";
+import { getAuthUser } from "@/lib/auth-helpers";
 import { prisma } from "@/lib/prisma";
 
 export async function GET(
@@ -41,8 +41,8 @@ export async function PUT(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const session = await auth();
-  if (!session?.user?.companyId) {
+  const user = await getAuthUser();
+  if (!user?.companyId) {
     return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
   }
 
@@ -54,7 +54,7 @@ export async function PUT(
     select: { companyId: true },
   });
 
-  if (!listing || listing.companyId !== session.user.companyId) {
+  if (!listing || listing.companyId !== user.companyId) {
     return NextResponse.json({ success: false, error: "Not authorized" }, { status: 403 });
   }
 
@@ -70,8 +70,8 @@ export async function DELETE(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const session = await auth();
-  if (!session?.user?.companyId) {
+  const user = await getAuthUser();
+  if (!user?.companyId) {
     return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
   }
 
@@ -82,7 +82,7 @@ export async function DELETE(
     select: { companyId: true },
   });
 
-  if (!listing || listing.companyId !== session.user.companyId) {
+  if (!listing || listing.companyId !== user.companyId) {
     return NextResponse.json({ success: false, error: "Not authorized" }, { status: 403 });
   }
 

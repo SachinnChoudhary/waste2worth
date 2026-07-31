@@ -1,15 +1,15 @@
 import { NextResponse } from "next/server";
-import { auth } from "@/lib/auth";
+import { getAuthUser } from "@/lib/auth-helpers";
 import { prisma } from "@/lib/prisma";
 
 export async function GET() {
   try {
-    const session = await auth();
-    if (!session?.user?.id) {
+    const user = await getAuthUser();
+    if (!user) {
       return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
     }
 
-    const userId = session.user.id;
+    const userId = user.id;
 
     // Find conversations where user is in participantIds
     const conversations = await prisma.conversation.findMany({
@@ -68,8 +68,8 @@ export async function GET() {
 
 export async function POST(request: Request) {
   try {
-    const session = await auth();
-    if (!session?.user?.id) {
+    const user = await getAuthUser();
+    if (!user) {
       return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
     }
 
@@ -88,7 +88,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ success: false, error: "Recipient user not found" }, { status: 404 });
     }
 
-    if (targetUserId === session.user.id) {
+    if (targetUserId === user.id) {
       return NextResponse.json({ success: false, error: "Cannot message yourself" }, { status: 400 });
     }
 
@@ -96,7 +96,7 @@ export async function POST(request: Request) {
     let conversation = await prisma.conversation.findFirst({
       where: {
         AND: [
-          { participantIds: { has: session.user.id } },
+          { participantIds: { has: user.id } },
           { participantIds: { has: targetUserId } },
         ],
       },
@@ -105,7 +105,7 @@ export async function POST(request: Request) {
     if (!conversation) {
       conversation = await prisma.conversation.create({
         data: {
-          participantIds: [session.user.id, targetUserId],
+          participantIds: [user.id, targetUserId],
           listingId: listingId || null,
         },
       });

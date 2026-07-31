@@ -17,6 +17,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { toast } from "sonner";
+import { SocialAuthButtons } from "@/components/auth/social-auth-buttons";
 
 const industrySectors = [
   "Manufacturing",
@@ -128,6 +129,8 @@ export default function SignupPage() {
             <form onSubmit={handleSubmit}>
               {step === 1 && (
                 <div className="space-y-4">
+                  <SocialAuthButtons mode="signup" />
+
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <Label htmlFor="name">Your Name</Label>

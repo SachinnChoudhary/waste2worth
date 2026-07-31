@@ -1,10 +1,10 @@
 import { NextResponse } from "next/server";
-import { auth } from "@/lib/auth";
+import { getAuthUser } from "@/lib/auth-helpers";
 import { prisma } from "@/lib/prisma";
 
 export async function GET(request: Request) {
-  const session = await auth();
-  if (!session) {
+  const user = await getAuthUser();
+  if (!user) {
     return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
   }
 
@@ -20,8 +20,8 @@ export async function GET(request: Request) {
   const where: Record<string, unknown> = { status: "ACTIVE" };
 
   // Don't show own company's listings
-  if (session.user.companyId) {
-    where.companyId = { not: session.user.companyId };
+  if (user.companyId) {
+    where.companyId = { not: user.companyId };
   }
 
   if (category && category !== "ALL") {

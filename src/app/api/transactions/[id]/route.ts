@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { auth } from "@/lib/auth";
+import { getAuthUser } from "@/lib/auth-helpers";
 import { prisma } from "@/lib/prisma";
 
 export async function GET(
@@ -7,13 +7,12 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const session = await auth();
-    if (!session?.user?.companyId) {
+    const user = await getAuthUser();
+    if (!user) {
       return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
     }
 
     const { id } = await params;
-    const companyId = session.user.companyId;
 
     const transaction = await prisma.transaction.findUnique({
       where: { id },
@@ -35,9 +34,9 @@ export async function GET(
     }
 
     if (
-      transaction.sellerCompanyId !== companyId &&
-      transaction.buyerCompanyId !== companyId &&
-      session.user.role !== "ADMIN"
+      transaction.sellerCompanyId !== user.companyId &&
+      transaction.buyerCompanyId !== user.companyId &&
+      user.role !== "ADMIN"
     ) {
       return NextResponse.json({ success: false, error: "Not authorized" }, { status: 403 });
     }
@@ -53,14 +52,13 @@ export async function PATCH(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const session = await auth();
-    if (!session?.user?.companyId) {
+    const user = await getAuthUser();
+    if (!user) {
       return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
     }
 
     const { id } = await params;
     const body = await request.json();
-    const companyId = session.user.companyId;
 
     const transaction = await prisma.transaction.findUnique({
       where: { id },
@@ -71,9 +69,9 @@ export async function PATCH(
     }
 
     if (
-      transaction.sellerCompanyId !== companyId &&
-      transaction.buyerCompanyId !== companyId &&
-      session.user.role !== "ADMIN"
+      transaction.sellerCompanyId !== user.companyId &&
+      transaction.buyerCompanyId !== user.companyId &&
+      user.role !== "ADMIN"
     ) {
       return NextResponse.json({ success: false, error: "Not authorized" }, { status: 403 });
     }

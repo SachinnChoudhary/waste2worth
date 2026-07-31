@@ -1,16 +1,16 @@
 import { NextResponse } from "next/server";
-import { auth } from "@/lib/auth";
+import { getAuthUser } from "@/lib/auth-helpers";
 import { prisma } from "@/lib/prisma";
 
 export async function GET() {
   try {
-    const session = await auth();
-    if (!session?.user?.companyId) {
+    const user = await getAuthUser();
+    if (!user) {
       return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
     }
 
     const company = await prisma.company.findUnique({
-      where: { id: session.user.companyId },
+      where: { id: user.companyId },
     });
 
     return NextResponse.json({ success: true, data: company });
@@ -21,8 +21,8 @@ export async function GET() {
 
 export async function PUT(request: Request) {
   try {
-    const session = await auth();
-    if (!session?.user?.companyId) {
+    const user = await getAuthUser();
+    if (!user?.companyId) {
       return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
     }
 
@@ -30,7 +30,7 @@ export async function PUT(request: Request) {
     const { name, industrySector, description, phone, website, address, city, state } = body;
 
     const updated = await prisma.company.update({
-      where: { id: session.user.companyId },
+      where: { id: user.companyId },
       data: {
         name,
         industrySector,

@@ -1,16 +1,16 @@
 import { NextResponse } from "next/server";
-import { auth } from "@/lib/auth";
+import { getAuthUser } from "@/lib/auth-helpers";
 import { prisma } from "@/lib/prisma";
 
 export async function GET() {
   try {
-    const session = await auth();
-    if (!session?.user?.id) {
+    const user = await getAuthUser();
+    if (!user) {
       return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
     }
 
     const notifications = await prisma.notification.findMany({
-      where: { userId: session.user.id },
+      where: { userId: user.id },
       orderBy: { createdAt: "desc" },
     });
 
@@ -22,13 +22,13 @@ export async function GET() {
 
 export async function PATCH() {
   try {
-    const session = await auth();
-    if (!session?.user?.id) {
+    const user = await getAuthUser();
+    if (!user) {
       return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
     }
 
     await prisma.notification.updateMany({
-      where: { userId: session.user.id, isRead: false },
+      where: { userId: user.id, isRead: false },
       data: { isRead: true },
     });
 

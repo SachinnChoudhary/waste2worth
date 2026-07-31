@@ -1,11 +1,11 @@
 import { NextResponse } from "next/server";
-import { auth } from "@/lib/auth";
+import { getAuthUser } from "@/lib/auth-helpers";
 import { prisma } from "@/lib/prisma";
 
 export async function GET(request: Request) {
   try {
-    const session = await auth();
-    if (!session?.user?.id) {
+    const user = await getAuthUser();
+    if (!user) {
       return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
     }
 
@@ -20,7 +20,7 @@ export async function GET(request: Request) {
       where: { id: conversationId },
     });
 
-    if (!conversation || !conversation.participantIds.includes(session.user.id)) {
+    if (!conversation || !conversation.participantIds.includes(user.id)) {
       return NextResponse.json({ success: false, error: "Not authorized" }, { status: 403 });
     }
 
@@ -42,8 +42,8 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
   try {
-    const session = await auth();
-    if (!session?.user?.id) {
+    const user = await getAuthUser();
+    if (!user) {
       return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
     }
 
@@ -57,16 +57,16 @@ export async function POST(request: Request) {
       where: { id: conversationId },
     });
 
-    if (!conversation || !conversation.participantIds.includes(session.user.id)) {
+    if (!conversation || !conversation.participantIds.includes(user.id)) {
       return NextResponse.json({ success: false, error: "Not authorized" }, { status: 403 });
     }
 
-    const receiverId = conversation.participantIds.find((id: string) => id !== session.user.id);
+    const receiverId = conversation.participantIds.find((id: string) => id !== user.id);
 
     const message = await prisma.message.create({
       data: {
         conversationId,
-        senderId: session.user.id,
+        senderId: user.id,
         receiverId: receiverId || null,
         content: content.trim(),
       },

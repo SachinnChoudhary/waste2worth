@@ -102,6 +102,9 @@ async function getCompanyDashboardData(companyId: string) {
 
 export default async function CompanyDashboard() {
   const user = await getAuthUser();
+  if (!user) {
+    redirect("/login");
+  }
   const data = await getCompanyDashboardData(user.companyId);
 
   return (

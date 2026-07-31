@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { auth } from "@/lib/auth";
+import { getAuthUser } from "@/lib/auth-helpers";
 import { prisma } from "@/lib/prisma";
 
 export async function POST(
@@ -7,8 +7,8 @@ export async function POST(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const session = await auth();
-    if (!session?.user?.id || !session?.user?.companyId) {
+    const user = await getAuthUser();
+    if (!user) {
       return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
     }
 
@@ -28,8 +28,8 @@ export async function POST(
       return NextResponse.json({ success: false, error: "Transaction not found" }, { status: 404 });
     }
 
-    const isSeller = transaction.sellerCompanyId === session.user.companyId;
-    const isBuyer = transaction.buyerCompanyId === session.user.companyId;
+    const isSeller = transaction.sellerCompanyId === user.companyId;
+    const isBuyer = transaction.buyerCompanyId === user.companyId;
 
     if (!isSeller && !isBuyer) {
       return NextResponse.json({ success: false, error: "Not authorized" }, { status: 403 });
@@ -50,7 +50,7 @@ export async function POST(
     const existing = await prisma.review.findFirst({
       where: {
         transactionId,
-        reviewerId: session.user.id,
+        reviewerId: user.id,
       },
     });
 
@@ -61,7 +61,7 @@ export async function POST(
     const review = await prisma.review.create({
       data: {
         transactionId,
-        reviewerId: session.user.id,
+        reviewerId: user.id,
         revieweeId: revieweeUser.id,
         rating: Number(rating),
         comment: comment || "",

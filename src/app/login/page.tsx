@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useEffect, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Recycle, Eye, EyeOff, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -10,13 +10,22 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
 import { createClient } from "@/lib/supabase/client";
+import { SocialAuthButtons } from "@/components/auth/social-auth-buttons";
 
-export default function LoginPage() {
+function LoginContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  // Show error toast if redirected from a failed OAuth callback
+  useEffect(() => {
+    if (searchParams.get("error") === "auth_callback_failed") {
+      toast.error("Authentication failed. Please try again.");
+    }
+  }, [searchParams]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -82,6 +91,8 @@ export default function LoginPage() {
             <CardDescription>Sign in to your Waste2Worth account</CardDescription>
           </CardHeader>
           <CardContent>
+            <SocialAuthButtons mode="login" />
+
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="email">Email</Label>
@@ -141,5 +152,13 @@ export default function LoginPage() {
         </Card>
       </div>
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense>
+      <LoginContent />
+    </Suspense>
   );
 }
