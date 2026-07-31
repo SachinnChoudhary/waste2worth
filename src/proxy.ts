@@ -17,8 +17,10 @@ export async function proxy(request: NextRequest) {
   const { supabaseResponse, user } = await updateSession(request);
 
   // Public routes that don't need auth
-  const publicRoutes = ["/", "/login", "/signup", "/verify-pending"];
-  const isPublicRoute = publicRoutes.includes(pathname);
+  const publicRoutes = ["/", "/login", "/signup", "/verify-pending", "/about", "/how-it-works", "/privacy", "/terms", "/auth/callback"];
+  const isPublicRoute = publicRoutes.some(
+    (route) => pathname === route || pathname.startsWith(route + "/")
+  );
 
   if (isPublicRoute) {
     // Redirect authenticated users away from auth pages
