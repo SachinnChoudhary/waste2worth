@@ -18,12 +18,16 @@ export function SocialAuthButtons({ mode }: SocialAuthButtonsProps) {
     setLoadingProvider(provider);
     try {
       const supabase = createClient();
-      const redirectTo = `${window.location.origin}/auth/callback`;
+      const origin = typeof window !== "undefined" ? window.location.origin : process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+      const redirectTo = `${origin}/auth/callback`;
 
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider,
         options: {
           redirectTo,
+          queryParams: {
+            prompt: "select_account",
+          },
         },
       });
 
