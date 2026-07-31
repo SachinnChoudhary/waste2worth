@@ -149,6 +149,7 @@ export async function POST(request: Request) {
 
         await tx.user.create({
           data: {
+            id: newUserId || undefined,
             name,
             email,
             passwordHash,

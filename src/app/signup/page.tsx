@@ -84,8 +84,21 @@ export default function SignupPage() {
       const data = await res.json();
 
       if (data.success) {
-        toast.success(data.message || "Account created! You can now log in.");
-        router.push("/login");
+        toast.success("Account created! Signing you in...");
+        const { createClient } = await import("@/lib/supabase/client");
+        const supabase = createClient();
+        const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
+          email: form.email,
+          password: form.password,
+        });
+
+        if (!signInError && signInData.user) {
+          toast.success("Welcome to CircuLink!");
+          window.location.href = "/dashboard";
+        } else {
+          toast.success(data.message || "Account created! Please sign in.");
+          router.push("/login");
+        }
       } else {
         toast.error(data.error || "Registration failed");
       }
